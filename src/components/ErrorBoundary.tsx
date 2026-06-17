@@ -1,5 +1,3 @@
-'use client';
-
 import { Component, ErrorInfo, ReactNode } from 'react';
 
 interface ErrorBoundaryProps {
@@ -8,41 +6,28 @@ interface ErrorBoundaryProps {
 
 interface ErrorBoundaryState {
   hasError: boolean;
-  error?: Error;
 }
 
-class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
+export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
   constructor(props: ErrorBoundaryProps) {
     super(props);
     this.state = { hasError: false };
   }
 
-  static getDerivedStateFromError(error: Error): ErrorBoundaryState {
-    return { hasError: true, error };
+  static getDerivedStateFromError(): ErrorBoundaryState {
+    return { hasError: true };
   }
 
   componentDidCatch(error: Error, errorInfo: ErrorInfo): void {
     console.error('ErrorBoundary caught an error:', error, errorInfo);
   }
 
-  resetErrorBoundary = (): void => {
-    this.setState({ hasError: false, error: undefined });
-  };
-
   render(): ReactNode {
     if (this.state.hasError) {
       return (
-        <div className="flex flex-col items-center justify-center p-6 max-w-md mx-auto text-center">
-          <h2 className="text-xl font-semibold text-red-600 mb-2">Oops! Something went wrong</h2>
-          <p className="text-gray-600 mb-4">
-            We\'re sorry, but the video summarizer encountered an unexpected error.
-          </p>
-          <button
-            onClick={this.resetErrorBoundary}
-            className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
-          >
-            Try Again
-          </button>
+        <div className="p-4 text-red-600 bg-red-50 rounded-lg border border-red-200">
+          <h2 className="font-semibold">Something went wrong</h2>
+          <p className="mt-1 text-sm">We\'ve encountered an unexpected error. Please try again or contact support.</p>
         </div>
       );
     }
@@ -50,5 +35,3 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
     return this.props.children;
   }
 }
-
-export default ErrorBoundary;
