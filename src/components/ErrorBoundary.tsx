@@ -1,5 +1,3 @@
-'use client';
-
 import { Component, ErrorInfo, ReactNode } from 'react';
 
 interface Props {
@@ -16,7 +14,7 @@ class ErrorBoundary extends Component<Props, State> {
     this.state = { hasError: false };
   }
 
-  static getDerivedStateFromError(_: Error): State {
+  static getDerivedStateFromError(): State {
     return { hasError: true };
   }
 
@@ -27,9 +25,11 @@ class ErrorBoundary extends Component<Props, State> {
   render(): ReactNode {
     if (this.state.hasError) {
       return (
-        <div className="p-4 text-red-600 bg-red-50 rounded-lg border border-red-200">
-          <h2 className="font-semibold">Something went wrong</h2>
-          <p>Please refresh the page or try again later.</p>
+        <div className="flex flex-col items-center justify-center p-8 text-center">
+          <h2 className="text-xl font-semibold text-red-600 mb-2">Something went wrong</h2>
+          <p className="text-gray-600 max-w-md">
+            We're sorry, but an unexpected error occurred. Please try again or contact support.
+          </p>
         </div>
       );
     }
