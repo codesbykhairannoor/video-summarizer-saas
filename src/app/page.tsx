@@ -1,63 +1,40 @@
+'use client';
+
 import { useState, useRef, useEffect } from 'react';
 import { AnimatePresence } from 'framer-motion';
 import { useLocale, useTranslations } from 'next-intl';
 import { cn } from '@/lib/utils';
 import VideoInputCard from '@/components/VideoInputCard';
 import SummaryResult from '@/components/SummaryResult';
+import ErrorBoundary from '@/components/ErrorBoundary';
 
 export default function HomePage() {
-  const [summary, setSummary] = useState<string | null>(null);
-  const [isProcessing, setIsProcessing] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const ref = useRef<HTMLDivElement>(null);
-
-  // Optional: add minimal useEffect usage if needed (e.g., analytics or scroll tracking)
-  useEffect(() => {
-    // Example placeholder — remove or replace with real logic if needed
-    if (ref.current) {
-      // e.g., ref.current.scrollIntoView({ behavior: 'smooth' });
-    }
-  }, []);
+  const t = useTranslations('HomePage');
+  const locale = useLocale();
 
   return (
-    <div className="container mx-auto px-4 py-8 max-w-4xl">
-      <header className="text-center mb-12">
-        <h1 className="text-4xl font-bold mb-4">AI Video Summarizer</h1>
-        <p className="text-lg text-muted-foreground">
-          Paste a video URL and get a concise, actionable summary in seconds.
-        </p>
-      </header>
+    <div className="min-h-screen bg-gradient-to-b from-background to-muted py-8 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-4xl mx-auto">
+        <header className="text-center mb-12">
+          <h1 className="text-4xl font-bold tracking-tight text-foreground sm:text-5xl">
+            {t('title')}
+          </h1>
+          <p className="mt-4 text-lg text-muted-foreground max-w-2xl mx-auto">
+            {t('description')}
+          </p>
+        </header>
 
-      <main>
-        <VideoInputCard 
-          onSummarize={(url) => {
-            setIsProcessing(true);
-            setError(null);
-            // Simulate API call
-            setTimeout(() => {
-              setSummary(`This is a sample summary for ${url}. It highlights key topics, speaker insights, and action items.`);
-              setIsProcessing(false);
-            }, 1500);
-          }}
-          onError={setError}
-        />
+        <ErrorBoundary>
+          <VideoInputCard />
+        </ErrorBoundary>
 
-        <AnimatePresence mode="wait">
-          {summary && (
-            <SummaryResult 
-              summary={summary} 
-              onReset={() => setSummary(null)} 
-              isLoading={isProcessing} 
-            />
-          )}
-        </AnimatePresence>
-
-        {error && (
-          <div className="mt-6 p-4 bg-destructive/10 border border-destructive rounded-lg text-destructive">
-            <p>{error}</p>
-          </div>
-        )}
-      </main>
+        <div className="mt-16">
+          <h2 className="text-2xl font-semibold text-foreground mb-6">
+            {t('recentSummaries')}
+          </h2>
+          <SummaryResult />
+        </div>
+      </div>
     </div>
   );
 }
