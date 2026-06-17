@@ -8,13 +8,16 @@ interface State {
   hasError: boolean;
 }
 
+// Mark as a Client Component explicitly
+'use client';
+
 class ErrorBoundary extends Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = { hasError: false };
   }
 
-  static getDerivedStateFromError(): State {
+  static getDerivedStateFromError(_: Error): State {
     return { hasError: true };
   }
 
@@ -25,14 +28,14 @@ class ErrorBoundary extends Component<Props, State> {
   render(): ReactNode {
     if (this.state.hasError) {
       return (
-        <div className="flex flex-col items-center justify-center min-h-[calc(100vh-120px)] p-4 text-center">
-          <h2 className="text-2xl font-bold text-red-600 mb-2">Oops! Something went wrong</h2>
-          <p className="text-gray-600 max-w-md">
-            We\'re sorry, but an unexpected error occurred while processing your request.
+        <div className="flex flex-col items-center justify-center p-8 text-center bg-red-50 rounded-lg border border-red-200">
+          <h2 className="text-xl font-semibold text-red-800 mb-2">Oops! Something went wrong</h2>
+          <p className="text-red-600 mb-4">
+            We\'re sorry — the video summarizer encountered an unexpected error.
           </p>
           <button
+            className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors"
             onClick={() => window.location.reload()}
-            className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
           >
             Try Again
           </button>
