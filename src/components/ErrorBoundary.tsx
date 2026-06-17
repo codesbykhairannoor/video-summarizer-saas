@@ -1,3 +1,5 @@
+'use client';
+
 import { Component, ErrorInfo, ReactNode } from 'react';
 
 interface Props {
@@ -7,9 +9,6 @@ interface Props {
 interface State {
   hasError: boolean;
 }
-
-// Mark as a Client Component
-'use client';
 
 class ErrorBoundary extends Component<Props, State> {
   constructor(props: Props) {
@@ -22,16 +21,16 @@ class ErrorBoundary extends Component<Props, State> {
   }
 
   componentDidCatch(error: Error, errorInfo: ErrorInfo): void {
-    console.error('ErrorBoundary caught an error:', error, errorInfo);
+    console.error('Uncaught error:', error, errorInfo);
   }
 
   render(): ReactNode {
     if (this.state.hasError) {
       return (
-        <div className="flex flex-col items-center justify-center p-8 text-center bg-red-50 rounded-lg">
+        <div className="flex flex-col items-center justify-center p-8 text-center bg-red-50 rounded-lg border border-red-200">
           <h2 className="text-xl font-semibold text-red-800 mb-2">Something went wrong</h2>
           <p className="text-red-600 mb-4">
-            We\'re sorry — the video summarizer encountered an unexpected error.
+            We\'re sorry — an unexpected error occurred while processing your request.
           </p>
           <button
             className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors"
