@@ -6,8 +6,10 @@ interface ErrorBoundaryProps {
 
 interface ErrorBoundaryState {
   hasError: boolean;
-  error?: Error;
 }
+
+// Mark as a Client Component
+'use client';
 
 class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
   constructor(props: ErrorBoundaryProps) {
@@ -15,27 +17,27 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
     this.state = { hasError: false };
   }
 
-  static getDerivedStateFromError(error: Error): ErrorBoundaryState {
-    return { hasError: true, error };
+  static getDerivedStateFromError(): ErrorBoundaryState {
+    return { hasError: true };
   }
 
   componentDidCatch(error: Error, errorInfo: ErrorInfo): void {
-    console.error('Uncaught error:', error, errorInfo);
+    console.error('ErrorBoundary caught an error:', error, errorInfo);
   }
 
   render(): ReactNode {
     if (this.state.hasError) {
       return (
-        <div className="flex flex-col items-center justify-center p-8 text-center bg-red-50 rounded-lg border border-red-200">
+        <div className="flex flex-col items-center justify-center p-8 text-center bg-red-50 rounded-lg">
           <h2 className="text-xl font-semibold text-red-800 mb-2">Something went wrong</h2>
           <p className="text-red-600 mb-4">
-            We\'re sorry — the application encountered an unexpected error.
+            We couldn't load this part of the app. Please try refreshing the page.
           </p>
           <button
             className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors"
             onClick={() => window.location.reload()}
           >
-            Try again
+            Refresh Page
           </button>
         </div>
       );
