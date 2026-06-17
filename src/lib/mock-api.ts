@@ -1,42 +1,29 @@
-import { SummaryResponse } from '../types';
+import { SummaryResponse } from '@/types';
 
-// Mock API response type
-interface MockApiResponse {
-  summary: string;
-  keyPoints: string[];
-  duration: string;
-  timestamp: string;
+// Mock API responses for development
+export const mockSummaryResponse: SummaryResponse = {
+  id: 'mock-123',
+  videoId: 'vid-456',
+  summary: 'This video explains how to build scalable Next.js applications using App Router, server components, and streaming. Key topics include data fetching patterns, caching strategies, and optimizing bundle size.',
+  keyPoints: [
+    'Use server components for data fetching when possible',
+    'Leverage ISR and revalidation for dynamic content',
+    'Optimize images and fonts with built-in Next.js optimizations',
+    'Implement proper error boundaries and loading states'
+  ],
+  duration: '2m 45s',
+  timestamp: new Date().toISOString(),
+};
+
+// Mock upload handler — simplified for dev
+export async function mockUploadVideo(file: File): Promise<{ id: string }> {
+  // Simulate API delay
+  await new Promise((r) => setTimeout(r, 800));
+  return { id: `mock-${Date.now()}` };
 }
 
-// Simulate API call with realistic delay and structure
-export async function mockSummarizeVideo(file: File): Promise<SummaryResponse> {
-  // Simulate network delay
-  await new Promise((resolve) => setTimeout(resolve, 1200));
-
-  // Mock response — matches SummaryResponse shape
-  const mockData: MockApiResponse = {
-    summary: `This video discusses the evolution of AI-powered video summarization techniques over the past five years. It highlights three major breakthroughs: contextual frame sampling, transformer-based temporal modeling, and real-time multi-modal alignment. The presenter emphasizes trade-offs between accuracy and latency, especially for SaaS deployments handling concurrent users.`,
-    keyPoints: [
-      'Contextual frame sampling improves relevance by 37% vs uniform sampling',
-      'Transformer-based temporal modeling enables cross-shot coherence',
-      'Real-time multi-modal alignment supports voice + visual cue fusion'
-    ],
-    duration: '4m 22s',
-    timestamp: new Date().toISOString(),
-  };
-
-  return {
-    success: true,
-    data: {
-      summary: mockData.summary,
-      keyPoints: mockData.keyPoints,
-      duration: mockData.duration,
-      timestamp: mockData.timestamp,
-    },
-  };
-}
-
-export async function mockGetStatus(id: string): Promise<{ status: 'processing' | 'completed' | 'failed'; progress?: number }> {
-  await new Promise((resolve) => setTimeout(resolve, 300));
-  return { status: 'completed' };
+// Mock fetch summary — simplified for dev
+export async function mockFetchSummary(videoId: string): Promise<SummaryResponse> {
+  await new Promise((r) => setTimeout(r, 1200));
+  return { ...mockSummaryResponse, videoId };
 }
