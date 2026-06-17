@@ -1,17 +1,11 @@
+import { CopyIcon, DownloadIcon } from '@/components/icons';
 import { useState, useEffect } from 'react';
-import { useLocale } from 'next-intl';
-import Button from '@/components/Button';
-import CopyIcon from '@/components/icons/CopyIcon';
-import DownloadIcon from '@/components/icons/DownloadIcon';
 
 interface SummaryResultProps {
   summary: string;
-  onReset: () => void;
-  isLoading: boolean;
 }
 
-export default function SummaryResult({ summary, onReset, isLoading }: SummaryResultProps) {
-  const locale = useLocale();
+export default function SummaryResult({ summary }: SummaryResultProps) {
   const [copied, setCopied] = useState(false);
 
   const handleCopy = () => {
@@ -25,41 +19,48 @@ export default function SummaryResult({ summary, onReset, isLoading }: SummaryRe
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `video-summary-${new Date().toISOString().slice(0, 10)}.txt`;
+    a.download = 'video-summary.txt';
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
   };
 
-  // Use useEffect minimally (e.g., for analytics or side effects)
-  useEffect(() => {
-    // Optional: track summary view
-  }, []);
-
   return (
-    <div className="mt-8 animate-in fade-in slide-in-from-bottom-4 duration-300">
-      <div className="rounded-xl border bg-card p-6 shadow-sm">
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-xl font-semibold">Summary</h2>
-          <div className="flex gap-2">
-            <Button variant="outline" size="sm" onClick={handleCopy} disabled={isLoading}>
-              <CopyIcon className="h-4 w-4 mr-2" />
-              {copied ? 'Copied!' : 'Copy'}
-            </Button>
-            <Button variant="outline" size="sm" onClick={handleDownload} disabled={isLoading}>
-              <DownloadIcon className="h-4 w-4 mr-2" />
-              Download
-            </Button>
-          </div>
-        </div>
+    <div className="mt-8 bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+      <div className="px-6 py-4 border-b border-gray-100 bg-gray-50">
+        <h2 className="text-lg font-semibold text-gray-900">Summary</h2>
+      </div>
+      <div className="p-6">
         <div className="prose prose-sm max-w-none">
-          <p>{summary}</p>
+          <p className="text-gray-700 whitespace-pre-wrap">{summary}</p>
         </div>
-        <div className="mt-6 flex justify-end">
-          <Button variant="outline" onClick={onReset} disabled={isLoading}>
-            Summarize Another Video
-          </Button>
+        <div className="mt-6 flex flex-wrap gap-3">
+          <button
+            onClick={handleCopy}
+            className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+          >
+            {copied ? (
+              <span className="flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" viewBox="0 0 20 20" fill="currentColor">
+                  <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                </svg>
+                Copied!
+              </span>
+            ) : (
+              <span className="flex items-center">
+                <CopyIcon className="h-4 w-4 mr-1" />
+                Copy
+              </span>
+            )}
+          </button>
+          <button
+            onClick={handleDownload}
+            className="inline-flex items-center px-4 py-2 bg-gray-800 text-white rounded-lg hover:bg-gray-900 transition-colors focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
+          >
+            <DownloadIcon className="h-4 w-4 mr-1" />
+            Download
+          </button>
         </div>
       </div>
     </div>

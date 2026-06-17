@@ -2,7 +2,6 @@ import { Component, ErrorInfo, ReactNode } from 'react';
 
 interface Props {
   children: ReactNode;
-  fallback?: ReactNode;
 }
 
 interface State {
@@ -20,18 +19,16 @@ class ErrorBoundary extends Component<Props, State> {
     return { hasError: true, error };
   }
 
-  componentDidCatch(error: Error, errorInfo: ErrorInfo) {
-    console.error('ErrorBoundary caught an error:', error, errorInfo);
+  componentDidCatch(error: Error, errorInfo: ErrorInfo): void {
+    console.error('Uncaught error:', error, errorInfo);
   }
 
-  render() {
+  render(): ReactNode {
     if (this.state.hasError) {
-      return this.props.fallback || (
-        <div className="p-6 text-center">
-          <h2 className="text-xl font-semibold text-destructive mb-2">Oops! Something went wrong.</h2>
-          <p className="text-muted-foreground">
-            We\'ve encountered an unexpected error. Please try again or contact support.
-          </p>
+      return (
+        <div className="p-4 bg-red-50 border border-red-200 rounded-lg">
+          <h2 className="text-red-800 font-medium">Something went wrong</h2>
+          <p className="text-red-700 mt-1">Please try again or contact support.</p>
         </div>
       );
     }
