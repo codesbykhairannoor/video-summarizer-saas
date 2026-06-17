@@ -1,31 +1,63 @@
-'use client';
-
 import { useState, useRef, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { AnimatePresence } from 'framer-motion';
 import { useLocale, useTranslations } from 'next-intl';
 import { cn } from '@/lib/utils';
+import VideoInputCard from '@/components/VideoInputCard';
+import SummaryResult from '@/components/SummaryResult';
 
 export default function HomePage() {
-  // Example minimal client logic — replace with actual implementation
-  const [isMounted, setIsMounted] = useState(false);
+  const [summary, setSummary] = useState<string | null>(null);
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const ref = useRef<HTMLDivElement>(null);
 
+  // Optional: add minimal useEffect usage if needed (e.g., analytics or scroll tracking)
   useEffect(() => {
-    setIsMounted(true);
+    // Example placeholder — remove or replace with real logic if needed
+    if (ref.current) {
+      // e.g., ref.current.scrollIntoView({ behavior: 'smooth' });
+    }
   }, []);
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100">
-      <div className="container mx-auto px-4 py-12">
-        <motion.h1 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: isMounted ? 1 : 0, y: isMounted ? 0 : 20 }}
-          className="text-4xl font-bold text-gray-900 text-center"
-        >
-          Video Summarizer SaaS
-        </motion.h1>
-        {/* Rest of page content — e.g., <VideoInputCard />, etc. */}
-      </div>
+    <div className="container mx-auto px-4 py-8 max-w-4xl">
+      <header className="text-center mb-12">
+        <h1 className="text-4xl font-bold mb-4">AI Video Summarizer</h1>
+        <p className="text-lg text-muted-foreground">
+          Paste a video URL and get a concise, actionable summary in seconds.
+        </p>
+      </header>
+
+      <main>
+        <VideoInputCard 
+          onSummarize={(url) => {
+            setIsProcessing(true);
+            setError(null);
+            // Simulate API call
+            setTimeout(() => {
+              setSummary(`This is a sample summary for ${url}. It highlights key topics, speaker insights, and action items.`);
+              setIsProcessing(false);
+            }, 1500);
+          }}
+          onError={setError}
+        />
+
+        <AnimatePresence mode="wait">
+          {summary && (
+            <SummaryResult 
+              summary={summary} 
+              onReset={() => setSummary(null)} 
+              isLoading={isProcessing} 
+            />
+          )}
+        </AnimatePresence>
+
+        {error && (
+          <div className="mt-6 p-4 bg-destructive/10 border border-destructive rounded-lg text-destructive">
+            <p>{error}</p>
+          </div>
+        )}
+      </main>
     </div>
   );
 }

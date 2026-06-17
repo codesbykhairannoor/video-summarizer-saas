@@ -2,10 +2,12 @@ import { Component, ErrorInfo, ReactNode } from 'react';
 
 interface Props {
   children: ReactNode;
+  fallback?: ReactNode;
 }
 
 interface State {
   hasError: boolean;
+  error?: Error;
 }
 
 class ErrorBoundary extends Component<Props, State> {
@@ -14,26 +16,22 @@ class ErrorBoundary extends Component<Props, State> {
     this.state = { hasError: false };
   }
 
-  static getDerivedStateFromError(): State {
-    return { hasError: true };
+  static getDerivedStateFromError(error: Error): State {
+    return { hasError: true, error };
   }
 
-  componentDidCatch(error: Error, errorInfo: ErrorInfo): void {
+  componentDidCatch(error: Error, errorInfo: ErrorInfo) {
     console.error('ErrorBoundary caught an error:', error, errorInfo);
   }
 
-  render(): ReactNode {
+  render() {
     if (this.state.hasError) {
-      return (
-        <div className="flex flex-col items-center justify-center min-h-screen p-4 text-center">
-          <h1 className="text-2xl font-bold text-red-600 mb-2">Something went wrong</h1>
-          <p className="text-gray-600 mb-4">We\'re sorry, but an unexpected error occurred.</p>
-          <button
-            className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            onClick={() => window.location.reload()}
-          >
-            Try again
-          </button>
+      return this.props.fallback || (
+        <div className="p-6 text-center">
+          <h2 className="text-xl font-semibold text-destructive mb-2">Oops! Something went wrong.</h2>
+          <p className="text-muted-foreground">
+            We\'ve encountered an unexpected error. Please try again or contact support.
+          </p>
         </div>
       );
     }
