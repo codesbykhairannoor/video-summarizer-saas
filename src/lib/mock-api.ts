@@ -1,30 +1,42 @@
-import { SummaryResponse } from '@/types';
+import { SummaryResponse } from '../types';
 
 // Mock API response type
 interface MockApiResponse {
-  id: string;
   summary: string;
-  duration: number;
+  keyPoints: string[];
+  duration: string;
   timestamp: string;
 }
 
-// Simulated API call with typed response
-export const mockFetchSummary = async (input: string, locale: string = 'en'): Promise<SummaryResponse> => {
+// Simulate API call with realistic delay and structure
+export async function mockSummarizeVideo(file: File): Promise<SummaryResponse> {
   // Simulate network delay
-  await new Promise((resolve) => setTimeout(resolve, 1500));
+  await new Promise((resolve) => setTimeout(resolve, 1200));
 
-  // Mock response data
+  // Mock response — matches SummaryResponse shape
   const mockData: MockApiResponse = {
-    id: `summary_${Date.now()}`,
-    summary: `This is a concise summary of the video content in ${locale}. It highlights the main points, key takeaways, and important details discussed in the video. The summary is generated using advanced AI techniques to ensure accuracy and relevance.`,
-    duration: 120,
+    summary: `This video discusses the evolution of AI-powered video summarization techniques over the past five years. It highlights three major breakthroughs: contextual frame sampling, transformer-based temporal modeling, and real-time multi-modal alignment. The presenter emphasizes trade-offs between accuracy and latency, especially for SaaS deployments handling concurrent users.`,
+    keyPoints: [
+      'Contextual frame sampling improves relevance by 37% vs uniform sampling',
+      'Transformer-based temporal modeling enables cross-shot coherence',
+      'Real-time multi-modal alignment supports voice + visual cue fusion'
+    ],
+    duration: '4m 22s',
     timestamp: new Date().toISOString(),
   };
 
   return {
-    id: mockData.id,
-    summary: mockData.summary,
-    duration: mockData.duration,
-    timestamp: mockData.timestamp,
+    success: true,
+    data: {
+      summary: mockData.summary,
+      keyPoints: mockData.keyPoints,
+      duration: mockData.duration,
+      timestamp: mockData.timestamp,
+    },
   };
-};
+}
+
+export async function mockGetStatus(id: string): Promise<{ status: 'processing' | 'completed' | 'failed'; progress?: number }> {
+  await new Promise((resolve) => setTimeout(resolve, 300));
+  return { status: 'completed' };
+}
